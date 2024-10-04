@@ -16,6 +16,7 @@
         <lombok.version>1.18.30</lombok.version>
         <jupiter.vesion>5.11.0</jupiter.vesion>
         <testNG.version>7.7.0</testNG.version>
+        <allure.version>2.20.1</allure.version>
     </properties>
 
     <dependencies>
@@ -59,6 +60,16 @@
             <artifactId>rest-assured</artifactId>
             <version>5.4.0</version>
         </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-java-commons</artifactId>
+            <version>2.20.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-testng</artifactId>
+            <version>${allure.version}</version> <!-- Замените на последнюю версию -->
+        </dependency>
     </dependencies>
 
     <build>
@@ -68,7 +79,22 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version> <!-- Актуальная версия плагина -->
             </plugin>
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>2.14.0</version> <!-- Замените на последнюю версию -->
+                <executions>
+                    <execution>
+                        <id>allure-results</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+
     </build>
 
 </project>
