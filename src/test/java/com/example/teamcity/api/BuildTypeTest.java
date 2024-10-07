@@ -2,12 +2,15 @@ package com.example.teamcity.api;
 
 import com.example.teamcity.api.models.BuildType;
 import com.example.teamcity.api.models.Project;
+import com.example.teamcity.api.models.Roles;
+import com.example.teamcity.api.models.User;
 import com.example.teamcity.api.requests.CheckedRequests;
 import com.example.teamcity.api.requests.unchecked.UncheckedBase;
 import com.example.teamcity.api.spec.Specifications;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
+
 
 import java.util.Arrays;
 
@@ -51,6 +54,19 @@ public class BuildTypeTest extends BaseApiTest {
 
     @Test(description = "Project admin should be able to create build type for their project", groups = {"Positive", "Roles"})
     public void projectAdminCreatesBuildTypeTest() {
+        //create project
+        superUserCheckRequests.getRequest(PROJECTS).create(testData.getProject());
+        //create tes data for project admin
+        testData.getUser().setRoles(generate(Roles.class, "PROJECT_ADMIN", "p:" + testData.getProject().getId()));
+        //create project admin
+        superUserCheckRequests.<User>getRequest(USERS).create(testData.getUser());
+        var userCheckRequests = new CheckedRequests(Specifications.authSpec(testData.getUser()));
+        userCheckRequests.getRequest(BUILD_TYPES).create(testData.getBuildType());
+        var createdBuildType = userCheckRequests.<BuildType>getRequest(BUILD_TYPES).read(testData.getBuildType().getId());
+
+        softy.assertEquals(testData.getBuildType().getName(), createdBuildType.getName(), "Build type name is not correct");
+
+
         step("Create user");
         step("Create project");
         step("Grant user PROJECT_ADMIN role in project");
